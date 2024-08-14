@@ -55,7 +55,8 @@ async function fetchProblems() {
             if (problem) {
                 problems.push({
                     name: problem.name,
-                    rating: problem.rating || 'Unknown'
+                    rating: problem.rating || 'Unknown',
+                    link: `https://codeforces.com/problemset/problem/${problem.contestId}/${problem.index}`
                 });
             }
         });
@@ -70,7 +71,7 @@ async function fetchProblems() {
         problems.forEach(problem => {
             const problemElement = document.createElement('div');
             problemElement.className = 'problem';
-            problemElement.innerHTML = `<div class="problem-title">${problem.name}</div><div class="problem-rating">Rating: ${problem.rating}</div>`;
+            problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${problem.name}</a><div class="problem-rating">Rating: ${problem.rating}</div>`;
             results.appendChild(problemElement);
         });
     } catch (err) {
