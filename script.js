@@ -4,7 +4,8 @@ async function fetchProblems() {
     const userId = document.getElementById('userId').value.trim();
     const loading = document.getElementById('loading');
     const error = document.getElementById('error');
-    const results = document.getElementById('results');
+    const details = document.getElementById('details');
+    const detailsContent = document.getElementById('detailsContent');
 
     if (!userId) {
         alert('Please enter a Codeforces ID.');
@@ -13,7 +14,8 @@ async function fetchProblems() {
 
     loading.classList.remove('hidden');
     error.classList.add('hidden');
-    results.innerHTML = '';
+    details.classList.add('hidden');
+    detailsContent.innerHTML = '';
 
     try {
         // Fetch user submissions
@@ -26,57 +28,91 @@ async function fetchProblems() {
 
         const submissions = submissionsData.result;
         const problemSet = new Set();
+        const problemRatings = {};
 
         // Process submissions to find problems with unsuccessful submissions
         for (const submission of submissions) {
             if (submission.verdict === 'WRONG_ANSWER' || submission.verdict === 'PRESENTATION_ERROR') {
-                problemSet.add(submission.problem.name);
+                const { name, contestId, index, rating } = submission.problem;
+                const problemLink = `https://codeforces.com/problemset/problem/${contestId}/${index}`;
+
+                if (!problemRatings[rating]) {
+                    problemRatings[rating] = [];
+                }
+                problemRatings[rating].push({ name, link: problemLink });
+                problemSet.add(name);
             }
         }
 
-        if (problemSet.size === 0) {
-            results.innerHTML = 'No problems with unsuccessful submissions found.';
+        if (Object.keys(problemRatings).length === 0) {
+            document.getElementById('results').innerHTML = 'No problems with unsuccessful submissions found.';
             return;
         }
 
-        // Fetch problem details
-        const problems = [];
-        const problemDetailsResponse = await fetch('https://codeforces.com/api/problemset.problems');
-        const problemDetailsData = await problemDetailsResponse.json();
+        // Prepare data for the bar chart
+        const chartLabels = Object.keys(problemRatings).sort((a, b) => a - b);
+        const chartData = chartLabels.map(rating => problemRatings[rating].length);
 
-        if (problemDetailsData.status !== 'OK') {
-            throw new Error('Error fetching problem details');
-        }
-
-        const allProblems = problemDetailsData.result.problems;
-
-        problemSet.forEach(problemName => {
-            const problem = allProblems.find(p => p.name === problemName);
-            if (problem) {
-                problems.push({
-                    name: problem.name,
-                    rating: problem.rating || 'Unknown',
-                    link: `https://codeforces.com/problemset/problem/${problem.contestId}/${problem.index}`
-                });
+        // Create the bar chart
+        new Chart(document.getElementById('ratingChart'), {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Number of Problems',
+                    data: chartData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Rating'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Number of Problems'
+                        }
+                    }
+                },
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const rating = chartLabels[index];
+                        displayProblems(rating);
+                    }
+                }
             }
-        });
-
-        problems.sort((a, b) => a.rating - b.rating);
-
-        if (problems.length === 0) {
-            results.innerHTML = 'No problems with unsuccessful submissions found.';
-            return;
-        }
-
-        problems.forEach(problem => {
-            const problemElement = document.createElement('div');
-            problemElement.className = 'problem';
-            problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${problem.name}</a><div class="problem-rating">Rating: ${problem.rating}</div>`;
-            results.appendChild(problemElement);
         });
     } catch (err) {
         error.innerText = `Error: ${err.message}`;
     } finally {
         loading.classList.add('hidden');
     }
+}
+
+function displayProblems(rating) {
+    const problemList = problemRatings[rating] || [];
+    const detailsContent = document.getElementById('detailsContent');
+
+    if (problemList.length === 0) {
+        detailsContent.innerHTML = `No problems with rating ${rating} found.`;
+        return;
+    }
+
+    detailsContent.innerHTML = `<h3>Problems with Rating ${rating}</h3>`;
+    problemList.forEach(problem => {
+        const problemElement = document.createElement('div');
+        problemElement.className = 'problem';
+        problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${problem.name}</a>`;
+        detailsContent.appendChild(problemElement);
+    });
+
+    document.getElementById('details').classList.remove('hidden');
 }

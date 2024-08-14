@@ -74,9 +74,20 @@ button:hover {
     font-size: 1.2rem;
 }
 
-#results {
+#ratingChart {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+}
+
+#details {
     margin-top: 20px;
     text-align: left;
+}
+
+#detailsContent {
+    margin-top: 20px;
 }
 
 .problem {
@@ -102,9 +113,4 @@ button:hover {
 
 .problem-title:hover {
     text-decoration: underline;
-}
-
-.problem-rating {
-    font-size: 1rem;
-    color: #666;
 }

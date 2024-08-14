@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Codeforces Problem Finder</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
 </head>
 <body>
     <div class="container">
@@ -15,7 +16,11 @@
         </div>
         <div id="loading" class="hidden">Loading...</div>
         <div id="error" class="hidden"></div>
-        <div id="results"></div>
+        <canvas id="ratingChart"></canvas> <!-- Canvas for Chart.js -->
+        <div id="details" class="hidden">
+            <h2>Problems of Selected Rating</h2>
+            <div id="detailsContent"></div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
