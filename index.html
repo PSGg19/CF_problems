@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codeforces Problem Finder</title>
+    <title>Codeforces Problem Tracker</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
 </head>
 <body>
     <div class="container">
-        <h1>Codeforces Problem Finder</h1>
-        <div class="input-group">
-            <input type="text" id="userId" placeholder="Enter Codeforces ID" required>
-            <button id="fetchButton">Find Problems</button>
+        <h1>Codeforces Problem Tracker</h1>
+        <input type="text" id="userId" placeholder="Enter Codeforces ID">
+        <button id="fetchButton">Fetch Problems</button>
+        <p id="loading" class="hidden">Loading...</p>
+        <p id="error" class="hidden"></p>
+        <div class="graph-container">
+            <canvas id="ratingChart"></canvas>
         </div>
-        <div id="loading" class="hidden">Loading...</div>
-        <div id="error" class="hidden"></div>
-        <canvas id="ratingChart"></canvas> <!-- Canvas for Chart.js -->
         <div id="details" class="hidden">
-            <h2>Problems of Selected Rating</h2>
             <div id="detailsContent"></div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
