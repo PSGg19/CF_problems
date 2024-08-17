@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codeforces Problem Tracker</title>
+    <title>Codeforces Unsuccessful Submissions</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Codeforces Problem Tracker</h1>
-        <input type="text" id="userId" placeholder="Enter Codeforces ID">
-        <button id="fetchButton">Fetch Problems</button>
-        <p id="loading" class="hidden">Loading...</p>
-        <p id="error" class="hidden"></p>
-        <div class="graph-container">
+    <div id="container">
+        <div id="inputSection">
+            <input type="text" id="userId" placeholder="Enter Codeforces ID">
+            <button id="fetchButton">Fetch Problems</button>
+            <div id="loading" class="hidden">Loading...</div>
+            <div id="error" class="hidden"></div>
+        </div>
+
+        <div id="graphContainer">
             <canvas id="ratingChart"></canvas>
         </div>
+
         <div id="details" class="hidden">
             <div id="detailsContent"></div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="script.js"></script>
 </body>
 </html>
