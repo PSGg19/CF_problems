@@ -1,4 +1,8 @@
+
+
 document.getElementById('fetchButton').addEventListener('click', fetchProblems);
+
+let problemRatings = {};  // Declare as global to be accessible in displayProblems function
 
 async function fetchProblems() {
     const userId = document.getElementById('userId').value.trim();
@@ -27,8 +31,8 @@ async function fetchProblems() {
         }
 
         const submissions = submissionsData.result;
-        const problemSet = new Set();
-        const problemRatings = {};
+        problemRatings = {};
+        const problemSet = new Set();  // To track unique problems
 
         // Process submissions to find problems with unsuccessful submissions
         for (const submission of submissions) {
@@ -36,11 +40,18 @@ async function fetchProblems() {
                 const { name, contestId, index, rating } = submission.problem;
                 const problemLink = `https://codeforces.com/problemset/problem/${contestId}/${index}`;
 
-                if (!problemRatings[rating]) {
-                    problemRatings[rating] = [];
+                // Use a unique identifier for each problem, like the problem's link or a combination of contestId and index
+                const uniqueProblemIdentifier = `${contestId}-${index}`;
+
+                if (!problemSet.has(uniqueProblemIdentifier)) {
+                    problemSet.add(uniqueProblemIdentifier);
+                    
+                    if (!problemRatings[rating]) {
+                        problemRatings[rating] = [];
+                    }
+
+                    problemRatings[rating].push({ name, link: problemLink });
                 }
-                problemRatings[rating].push({ name, link: problemLink });
-                problemSet.add(name);
             }
         }
 
@@ -53,6 +64,20 @@ async function fetchProblems() {
         const chartLabels = Object.keys(problemRatings).sort((a, b) => a - b);
         const chartData = chartLabels.map(rating => problemRatings[rating].length);
 
+        // Define colors based on rating ranges
+        const getColorForRating = (rating) => {
+            if (rating >= 0 && rating <= 1100) return 'rgba(0, 0, 0, 0.3)';   // Black with 30% opacity for 0-1100
+            if (rating >= 1200 && rating <= 1300) return 'rgba(0, 128, 0, 0.5)'; // Green with 50% opacity
+            if (rating >= 1400 && rating <= 1500) return 'rgba(0, 255, 255, 0.5)'; // Cyan with 50% opacity
+            if (rating >= 1600 && rating <= 1800) return 'rgba(0, 0, 255, 0.5)'; // Blue with 50% opacity
+            if (rating >= 1900 && rating <= 2100) return 'rgba(128, 0, 128, 0.5)'; // Violet with 50% opacity
+            if (rating >= 2200 && rating <= 2300) return 'rgba(255, 165, 0, 0.5)'; // Orange with 50% opacity
+            if (rating >= 2400 && rating <= 2600) return 'rgba(255, 0, 0, 0.5)'; // Red with 50% opacity
+            return 'rgba(128, 128, 128, 0.5)'; // Gray with 50% opacity for other ratings
+        };
+
+        const chartColors = chartLabels.map(rating => getColorForRating(rating));
+
         // Create the bar chart
         new Chart(document.getElementById('ratingChart'), {
             type: 'bar',
@@ -61,8 +86,8 @@ async function fetchProblems() {
                 datasets: [{
                     label: 'Number of Problems',
                     data: chartData,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: chartColors, // Colors with transparency
+                    borderColor: chartColors, // Same as background color
                     borderWidth: 1
                 }]
             },
@@ -78,7 +103,8 @@ async function fetchProblems() {
                         title: {
                             display: true,
                             text: 'Number of Problems'
-                        }
+                        },
+                        beginAtZero: true
                     }
                 },
                 onClick: (event, elements) => {
