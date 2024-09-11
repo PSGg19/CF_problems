@@ -33,7 +33,7 @@ async function fetchProblems() {
         const problemSet = new Set();
 
         for (const submission of submissions) {
-            if (submission.verdict === 'WRONG_ANSWER' || submission.verdict === 'PRESENTATION_ERROR') {
+            if (submission.verdict === 'WRONG_ANSWER' || submission.verdict!=='OK' || submission.verdict === 'PRESENTATION_ERROR') {
                 const { name, contestId, index, rating } = submission.problem;
                 const problemLink = `https://codeforces.com/problemset/problem/${contestId}/${index}`;
 
@@ -152,11 +152,14 @@ function displayProblems(rating) {
     }
 
     detailsContent.innerHTML = `<h3>Problems with Rating ${rating}</h3>`;
-    problemList.forEach(problem => {
+    
+    problemList.forEach((problem,index) => {
+
         const problemElement = document.createElement('div');
         problemElement.className = 'problem';
-        problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${problem.name}</a>`;
+        problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${index+1}. ${ problem.name}</a>`;
         detailsContent.appendChild(problemElement);
+
     });
 
     document.getElementById('details').classList.remove('hidden');

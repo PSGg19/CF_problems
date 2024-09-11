@@ -3,29 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codeforces Unsuccessful Submissions</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>CF Problems Tracker</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div id="container">
-        <center><h1>CF_PROBLEMS_TRACKER</h1>
-        <div id="inputSection">
-            <input type="text" id="userId" placeholder="Enter Codeforces ID">
+    <header>
+        <nav>
+            <div class="logo">CF Problems Tracker</div>
+            <div class="nav-links">
+                <a href="#" class="active">HOME</a>
+                <a href="#">COMPARE</a>
+                <a href="#">VIRTUAL RATING CHANGE</a>
+                <a href="#">SAY SOMETHING</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div id="container">
+            <input type="text" id="userId" placeholder="Codeforces User Handle">
             <button id="fetchButton">Fetch Problems</button>
             <div id="loading" class="hidden">Loading...</div>
             <div id="error" class="hidden"></div>
+            <div id="graphContainer">
+                <canvas id="ratingChart"></canvas>
+            </div>
+            <div id="details" class="hidden">
+                <div id="detailsContent"></div>
+            </div>
         </div>
-
-        <div id="graphContainer">
-            <canvas id="ratingChart"></canvas>
+    </main>
+    <footer>
+        <p>Developed by [Your Name]</p>
+        <div class="social-buttons">
+            <button class="recommend">Recommend</button>
+            <button class="star">Star 1,108</button>
         </div>
-
-        <div id="details" class="hidden">
-            <div id="detailsContent"></div>
-        </div>
-    </div>
-
+    </footer>
     <script src="script.js"></script>
 </body>
 </html>
