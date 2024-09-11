@@ -9,8 +9,6 @@ async function fetchProblems() {
     const userId = document.getElementById('userId').value.trim();
     const loading = document.getElementById('loading');
     const error = document.getElementById('error');
-    const details = document.getElementById('details');
-    const detailsContent = document.getElementById('detailsContent');
 
     if (!userId) {
         alert('Please enter a Codeforces ID.');
@@ -19,8 +17,8 @@ async function fetchProblems() {
 
     loading.classList.remove('hidden');
     error.classList.add('hidden');
-    details.classList.add('hidden');
-    detailsContent.innerHTML = '';
+    document.getElementById('solvedDetails').classList.add('hidden');
+    document.getElementById('struggledDetails').classList.add('hidden');
 
     try {
         const submissionsResponse = await fetch(`https://codeforces.com/api/user.status?handle=${userId}&from=1&count=10000`);
@@ -62,6 +60,7 @@ async function fetchProblems() {
 
         createChart('solvedChart', solvedProblemRatings, 'All Solved Problems');
         createChart('struggledChart', struggledProblemRatings, 'Struggled Problems');
+        setupUniformScroll();
 
     } catch (err) {
         error.innerText = `Error: ${err.message}`;
@@ -93,7 +92,7 @@ function createChart(canvasId, problemRatings, title) {
         return 'rgba(128, 128, 128, 0.5)';
     };
 
-    const chartColors = chartLabels.map(rating => getColorForRating(rating));
+    const chartColors = chartLabels.map(rating => getColorForRating(parseInt(rating)));
 
     const newChart = new Chart(ctx, {
         type: 'bar',
@@ -108,6 +107,8 @@ function createChart(canvasId, problemRatings, title) {
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     title: {
@@ -139,7 +140,7 @@ function createChart(canvasId, problemRatings, title) {
                 },
                 tooltip: {
                     callbacks: {
-                        label: (context) => `${context.dataset.label}: ${context.raw}`
+                        label: (context) => `Number of Problems: ${context.raw}`
                     }
                 }
             },
@@ -147,7 +148,7 @@ function createChart(canvasId, problemRatings, title) {
                 if (elements.length > 0) {
                     const index = elements[0].index;
                     const rating = chartLabels[index];
-                    displayProblems(rating, canvasId === 'solvedChart' ? solvedProblemRatings : struggledProblemRatings);
+                    displayProblems(rating, canvasId === 'solvedChart' ? solvedProblemRatings : struggledProblemRatings, canvasId === 'solvedChart' ? 'solvedDetails' : 'struggledDetails');
                 }
             }
         }
@@ -160,23 +161,41 @@ function createChart(canvasId, problemRatings, title) {
     }
 }
 
-function displayProblems(rating, problemRatings) {
+function displayProblems(rating, problemRatings, detailsId) {
     const problemList = problemRatings[rating] || [];
-    const detailsContent = document.getElementById('detailsContent');
+    const detailsContent = document.getElementById(detailsId);
+    const otherDetailsId = detailsId === 'solvedDetails' ? 'struggledDetails' : 'solvedDetails';
+    const otherDetailsContent = document.getElementById(otherDetailsId);
 
     if (problemList.length === 0) {
-        detailsContent.innerHTML = `No problems with rating ${rating} found.`;
-        return;
+        detailsContent.innerHTML = `<h4>Problems with Rating ${rating}</h4>No problems with rating ${rating} found.`;
+    } else {
+        detailsContent.innerHTML = `<h4>Problems with Rating ${rating}</h4>`;
+        
+        problemList.forEach((problem, index) => {
+            const problemElement = document.createElement('div');
+            problemElement.className = 'problem';
+            problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${index+1}. ${problem.name}</a>`;
+            detailsContent.appendChild(problemElement);
+        });
     }
 
-    detailsContent.innerHTML = `<h3>Problems with Rating ${rating}</h3>`;
-    
-    problemList.forEach((problem, index) => {
-        const problemElement = document.createElement('div');
-        problemElement.className = 'problem';
-        problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${index+1}. ${problem.name}</a>`;
-        detailsContent.appendChild(problemElement);
+    detailsContent.classList.remove('hidden');
+    otherDetailsContent.classList.remove('hidden');
+
+    // Scroll to the details section
+    detailsContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function setupUniformScroll() {
+    const solvedDetails = document.getElementById('solvedDetails');
+    const struggledDetails = document.getElementById('struggledDetails');
+
+    solvedDetails.addEventListener('scroll', () => {
+        struggledDetails.scrollTop = solvedDetails.scrollTop;
     });
 
-    document.getElementById('details').classList.remove('hidden');
+    struggledDetails.addEventListener('scroll', () => {
+        solvedDetails.scrollTop = struggledDetails.scrollTop;
+    });
 }

@@ -40,15 +40,13 @@ nav {
 
 main {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 2rem;
+    overflow-y: auto;
 }
 
 #container {
-    width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
+    margin: 0 auto;
     text-align: center;
 }
 
@@ -75,15 +73,28 @@ button {
     display: flex;
     justify-content: space-between;
     margin-top: 2rem;
+    position: relative;
 }
 
 .graph-wrapper {
     width: 48%;
+    display: flex;
+    flex-direction: column;
 }
 
-#details {
-    margin-top: 2rem;
+.graph-area {
+    height: 400px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white;
+}
+
+.details {
+    margin-top: 1rem;
     text-align: left;
+    max-height: calc(100vh - 500px);
+    overflow-y: auto;
 }
 
 .problem-title {
@@ -112,4 +123,9 @@ footer {
 
 .social-buttons button {
     margin: 0 0.5rem;
+}
+
+/* Ensure content is visible when scrolling */
+html {
+    scroll-padding-top: 450px;
 }

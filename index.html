@@ -28,20 +28,23 @@
             <div id="graphsContainer">
                 <div class="graph-wrapper">
                     <h3>All the problems you solved</h3>
-                    <canvas id="solvedChart"></canvas>
+                    <div class="graph-area">
+                        <canvas id="solvedChart"></canvas>
+                    </div>
+                    <div id="solvedDetails" class="details hidden"></div>
                 </div>
                 <div class="graph-wrapper">
                     <h3>Problems you struggled while solving</h3>
-                    <canvas id="struggledChart"></canvas>
+                    <div class="graph-area">
+                        <canvas id="struggledChart"></canvas>
+                    </div>
+                    <div id="struggledDetails" class="details hidden"></div>
                 </div>
-            </div>
-            <div id="details" class="hidden">
-                <div id="detailsContent"></div>
             </div>
         </div>
     </main>
     <footer>
-        <p>Developed by [PRAHLAD SHARAN GUPTA]</p>
+        <p>Developed by [<a href="https://codeforces.com/profile/PSG19">Prahlad sharan</a>]</p>
         <div class="social-buttons">
             <button class="recommend">Recommend</button>
             <button class="star">Star 1,108</button>
