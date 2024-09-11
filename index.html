@@ -19,37 +19,44 @@
             </div>
         </nav>
     </header>
+
     <main>
         <div id="container">
-            <input type="text" id="userId" placeholder="Codeforces User Handle">
+            <input type="text" id="userId" placeholder="Enter Codeforces ID">
             <button id="fetchButton">Fetch Problems</button>
+
             <div id="loading" class="hidden">Loading...</div>
             <div id="error" class="hidden"></div>
-            <div id="graphsContainer">
-                <div class="graph-wrapper">
-                    <h3>All the problems you solved</h3>
-                    <div class="graph-area">
-                        <canvas id="solvedChart"></canvas>
+
+            <div id="mainContent" class="hidden">
+                <div id="graphsContainer">
+                    <div class="graph-wrapper">
+                        <h3>All the problems you solved</h3>
+                        <div class="graph-area">
+                            <canvas id="solvedChart"></canvas>
+                        </div>
+                        <div id="solvedDetails" class="details hidden"></div>
                     </div>
-                    <div id="solvedDetails" class="details hidden"></div>
-                </div>
-                <div class="graph-wrapper">
-                    <h3>Problems you struggled while solving</h3>
-                    <div class="graph-area">
-                        <canvas id="struggledChart"></canvas>
+                    <div class="graph-wrapper">
+                        <h3>Problems you struggled while solving</h3>
+                        <div class="graph-area">
+                            <canvas id="struggledChart"></canvas>
+                        </div>
+                        <div id="struggledDetails" class="details hidden"></div>
                     </div>
-                    <div id="struggledDetails" class="details hidden"></div>
                 </div>
             </div>
         </div>
     </main>
+
     <footer>
-        <p>Developed by [<a href="https://codeforces.com/profile/PSG19">Prahlad sharan</a>]</p>
+        Developed by <a href="https://codeforces.com/profile/PSG19">Prahlad sharan</a>
         <div class="social-buttons">
-            <button class="recommend">Recommend</button>
-            <button class="star">Star 1,108</button>
+            <button>Recommend</button>
+            <button>Star 1,108</button>
         </div>
     </footer>
+
     <script src="script.js"></script>
 </body>
 </html>

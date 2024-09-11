@@ -1,4 +1,10 @@
 document.getElementById('fetchButton').addEventListener('click', fetchProblems);
+document.getElementById('userId').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        fetchProblems();
+    }
+});
 
 let solvedProblemRatings = {};
 let struggledProblemRatings = {};
@@ -9,6 +15,7 @@ async function fetchProblems() {
     const userId = document.getElementById('userId').value.trim();
     const loading = document.getElementById('loading');
     const error = document.getElementById('error');
+    const mainContent = document.getElementById('mainContent');
 
     if (!userId) {
         alert('Please enter a Codeforces ID.');
@@ -17,6 +24,7 @@ async function fetchProblems() {
 
     loading.classList.remove('hidden');
     error.classList.add('hidden');
+    mainContent.classList.add('hidden');
     document.getElementById('solvedDetails').classList.add('hidden');
     document.getElementById('struggledDetails').classList.add('hidden');
 
@@ -61,6 +69,8 @@ async function fetchProblems() {
         createChart('solvedChart', solvedProblemRatings, 'All Solved Problems');
         createChart('struggledChart', struggledProblemRatings, 'Struggled Problems');
         setupUniformScroll();
+
+        mainContent.classList.remove('hidden');
 
     } catch (err) {
         error.innerText = `Error: ${err.message}`;
@@ -183,7 +193,6 @@ function displayProblems(rating, problemRatings, detailsId) {
     detailsContent.classList.remove('hidden');
     otherDetailsContent.classList.remove('hidden');
 
-    // Scroll to the details section
     detailsContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
