@@ -48,12 +48,13 @@ main {
 
 #container {
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
     text-align: center;
 }
 
 input[type="text"] {
     width: 100%;
+    max-width: 400px;
     padding: 0.5rem;
     margin-bottom: 1rem;
     border: 1px solid #ddd;
@@ -70,8 +71,14 @@ button {
     cursor: pointer;
 }
 
-#graphContainer {
+#graphsContainer {
+    display: flex;
+    justify-content: space-between;
     margin-top: 2rem;
+}
+
+.graph-wrapper {
+    width: 48%;
 }
 
 #details {

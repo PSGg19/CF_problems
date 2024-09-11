@@ -25,8 +25,15 @@
             <button id="fetchButton">Fetch Problems</button>
             <div id="loading" class="hidden">Loading...</div>
             <div id="error" class="hidden"></div>
-            <div id="graphContainer">
-                <canvas id="ratingChart"></canvas>
+            <div id="graphsContainer">
+                <div class="graph-wrapper">
+                    <h3>All the problems you solved</h3>
+                    <canvas id="solvedChart"></canvas>
+                </div>
+                <div class="graph-wrapper">
+                    <h3>Problems you struggled while solving</h3>
+                    <canvas id="struggledChart"></canvas>
+                </div>
             </div>
             <div id="details" class="hidden">
                 <div id="detailsContent"></div>
@@ -34,7 +41,7 @@
         </div>
     </main>
     <footer>
-        <p>Developed by [Your Name]</p>
+        <p>Developed by [PRAHLAD SHARAN GUPTA]</p>
         <div class="social-buttons">
             <button class="recommend">Recommend</button>
             <button class="star">Star 1,108</button>
