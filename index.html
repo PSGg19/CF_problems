@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CF Problems Tracker</title>
+
+    <!-- Linking external CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js Library for graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Header Section -->
     <header>
         <nav>
             <div class="logo">CF Problems Tracker</div>
@@ -20,16 +25,22 @@
         </nav>
     </header>
 
+    <!-- Main Content Section -->
     <main>
         <div id="container">
+            <!-- User Input Section -->
             <input type="text" id="userId" placeholder="Enter Codeforces ID">
             <button id="fetchButton">Fetch Problems</button>
 
+            <!-- Loading and Error Messages -->
             <div id="loading" class="hidden">Loading...</div>
             <div id="error" class="hidden"></div>
 
+            <!-- Main Content (Graphs) -->
             <div id="mainContent" class="hidden">
                 <div id="graphsContainer">
+                    
+                    <!-- Solved Problems Graph -->
                     <div class="graph-wrapper">
                         <h3>All the problems you solved</h3>
                         <div class="graph-area">
@@ -37,6 +48,8 @@
                         </div>
                         <div id="solvedDetails" class="details hidden"></div>
                     </div>
+
+                    <!-- Struggled Problems Graph -->
                     <div class="graph-wrapper">
                         <h3>Problems you struggled while solving</h3>
                         <div class="graph-area">
@@ -44,19 +57,23 @@
                         </div>
                         <div id="struggledDetails" class="details hidden"></div>
                     </div>
+
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer Section -->
     <footer>
-        Developed by <a href="https://codeforces.com/profile/PSG19">Prahlad sharan</a>
+        Developed by 
+        <a href="https://codeforces.com/profile/PSG19" target="_blank">Prahlad Sharan</a>
         <div class="social-buttons">
             <button>Recommend</button>
             <button>Star 1,108</button>
         </div>
     </footer>
 
+    <!-- Linking external JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
