@@ -196,18 +196,14 @@ function displayProblems(rating, problemRatings, detailsId) {
     detailsContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Function to synchronize scrolling between two divs
 function setupUniformScroll() {
-    // Get references to the solved and struggled details containers
     const solvedDetails = document.getElementById('solvedDetails');
     const struggledDetails = document.getElementById('struggledDetails');
 
-    // When 'solvedDetails' is scrolled, update 'struggledDetails' scroll position
     solvedDetails.addEventListener('scroll', () => {
         struggledDetails.scrollTop = solvedDetails.scrollTop;
     });
 
-    // When 'struggledDetails' is scrolled, update 'solvedDetails' scroll position
     struggledDetails.addEventListener('scroll', () => {
         solvedDetails.scrollTop = struggledDetails.scrollTop;
     });
