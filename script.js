@@ -1,7 +1,4 @@
-// Event listener: Fetch problems when button is clicked
 document.getElementById('fetchButton').addEventListener('click', fetchProblems);
-
-// Event listener: Fetch problems when Enter key is pressed in input
 document.getElementById('userId').addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -9,26 +6,22 @@ document.getElementById('userId').addEventListener('keypress', function(event) {
     }
 });
 
-// Global variables to store problem ratings and chart instances
 let solvedProblemRatings = {};
 let struggledProblemRatings = {};
 let solvedChart = null;
 let struggledChart = null;
 
-// Function to fetch user submissions and categorize problems
 async function fetchProblems() {
     const userId = document.getElementById('userId').value.trim();
     const loading = document.getElementById('loading');
     const error = document.getElementById('error');
     const mainContent = document.getElementById('mainContent');
 
-    // If no userId is entered, show alert
     if (!userId) {
         alert('Please enter a Codeforces ID.');
         return;
     }
 
-    // Show loading animation, hide previous results
     loading.classList.remove('hidden');
     error.classList.add('hidden');
     mainContent.classList.add('hidden');
@@ -36,11 +29,9 @@ async function fetchProblems() {
     document.getElementById('struggledDetails').classList.add('hidden');
 
     try {
-        // Fetch all submissions from Codeforces API
         const submissionsResponse = await fetch(`https://codeforces.com/api/user.status?handle=${userId}&from=1&count=10000`);
         const submissionsData = await submissionsResponse.json();
 
-        // Handle API error
         if (submissionsData.status !== 'OK') {
             throw new Error('Error fetching submissions');
         }
@@ -51,14 +42,12 @@ async function fetchProblems() {
         const solvedSet = new Set();
         const struggledSet = new Set();
 
-        // Loop through each submission and categorize into solved/struggled
         for (const submission of submissions) {
             const { name, contestId, index, rating } = submission.problem;
             const problemLink = `https://codeforces.com/problemset/problem/${contestId}/${index}`;
             const uniqueProblemIdentifier = `${contestId}-${index}`;
 
             if (submission.verdict === 'OK') {
-                // Solved problems
                 if (!solvedSet.has(uniqueProblemIdentifier)) {
                     solvedSet.add(uniqueProblemIdentifier);
                     if (!solvedProblemRatings[rating]) {
@@ -67,7 +56,6 @@ async function fetchProblems() {
                     solvedProblemRatings[rating].push({ name, link: problemLink });
                 }
             } else if (submission.verdict === 'WRONG_ANSWER' || submission.verdict === 'PRESENTATION_ERROR') {
-                // Struggled problems (wrong answer or presentation error)
                 if (!struggledSet.has(uniqueProblemIdentifier)) {
                     struggledSet.add(uniqueProblemIdentifier);
                     if (!struggledProblemRatings[rating]) {
@@ -78,44 +66,31 @@ async function fetchProblems() {
             }
         }
 
-        // Create charts for solved and struggled problems
         createChart('solvedChart', solvedProblemRatings, 'All Solved Problems');
         createChart('struggledChart', struggledProblemRatings, 'Struggled Problems');
-
-        // Enable uniform scroll between both problem lists
         setupUniformScroll();
 
-        // Show main content after loading
         mainContent.classList.remove('hidden');
 
     } catch (err) {
-        // Show error message on fetch failure
         error.innerText = `Error: ${err.message}`;
         error.classList.remove('hidden');
     } finally {
-        // Hide loading animation
         loading.classList.add('hidden');
     }
 }
 
-// Function to create and render a bar chart
 function createChart(canvasId, problemRatings, title) {
     const ctx = document.getElementById(canvasId).getContext('2d');
-
-    // Destroy existing chart if it exists (to avoid overlapping)
     if (canvasId === 'solvedChart' && solvedChart) {
         solvedChart.destroy();
     } else if (canvasId === 'struggledChart' && struggledChart) {
         struggledChart.destroy();
     }
 
-    // Ratings we want to display on the X-axis
     const chartLabels = ['800', '900', '1000', '1100', '1200', '1300', '1400', '1500', '1600', '1700', '1800', '1900', '2000', '2100', '2200', '2300', '2400', '2500', '2600'];
-
-    // Data for each rating: number of problems solved/struggled
     const chartData = chartLabels.map(rating => problemRatings[rating] ? problemRatings[rating].length : 0);
 
-    // Function to return color based on rating range
     const getColorForRating = (rating) => {
         if (rating >= 0 && rating <= 1100) return 'rgba(0, 0, 0, 0.3)';
         if (rating >= 1200 && rating <= 1300) return 'rgba(0, 128, 0, 0.5)';
@@ -127,10 +102,8 @@ function createChart(canvasId, problemRatings, title) {
         return 'rgba(128, 128, 128, 0.5)';
     };
 
-    // Colors for each bar based on rating
     const chartColors = chartLabels.map(rating => getColorForRating(parseInt(rating)));
 
-    // Create a new bar chart using Chart.js
     const newChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -181,22 +154,16 @@ function createChart(canvasId, problemRatings, title) {
                     }
                 }
             },
-            // Handle click on a bar -> show problems of that rating
             onClick: (event, elements) => {
                 if (elements.length > 0) {
                     const index = elements[0].index;
                     const rating = chartLabels[index];
-                    displayProblems(
-                        rating, 
-                        canvasId === 'solvedChart' ? solvedProblemRatings : struggledProblemRatings, 
-                        canvasId === 'solvedChart' ? 'solvedDetails' : 'struggledDetails'
-                    );
+                    displayProblems(rating, canvasId === 'solvedChart' ? solvedProblemRatings : struggledProblemRatings, canvasId === 'solvedChart' ? 'solvedDetails' : 'struggledDetails');
                 }
             }
         }
     });
 
-    // Save the chart instance for later destruction
     if (canvasId === 'solvedChart') {
         solvedChart = newChart;
     } else if (canvasId === 'struggledChart') {
@@ -206,24 +173,26 @@ function createChart(canvasId, problemRatings, title) {
 
 // Function to display problems of a specific rating inside a given container
 function displayProblems(rating, problemRatings, detailsId) {
+    // Get the list of problems for the given rating, or an empty array if none exist
     const problemList = problemRatings[rating] || [];
 
-    // Get the container where problems will be shown
+    // Get the container where problems will be displayed
     const detailsContent = document.getElementById(detailsId);
 
-    // Also get the opposite container to show side by side
+    // Get the other container (solvedDetails <-> struggledDetails) to show both side-by-side
     const otherDetailsId = detailsId === 'solvedDetails' ? 'struggledDetails' : 'solvedDetails';
     const otherDetailsContent = document.getElementById(otherDetailsId);
 
-    // If no problems exist for that rating
+    // If no problems found for the given rating
     if (problemList.length === 0) {
         detailsContent.innerHTML = `<h4>Problems with Rating ${rating}</h4>No problems with rating ${rating} found.`;
     } 
-    // If problems exist
+    // If problems exist for the given rating
     else {
+        // Start by adding a heading
         detailsContent.innerHTML = `<h4>Problems with Rating ${rating}</h4>`;
 
-        // Create a link for each problem
+        // Loop through each problem and create a clickable link
         problemList.forEach((problem, index) => {
             const problemElement = document.createElement('div');
             problemElement.className = 'problem';
@@ -232,20 +201,19 @@ function displayProblems(rating, problemRatings, detailsId) {
         });
     }
 
-    // Make both containers visible
+    // Make sure both containers are visible
     detailsContent.classList.remove('hidden');
     otherDetailsContent.classList.remove('hidden');
 
-    // Scroll smoothly to the selected container
+    // Smooth scroll to the details container
     detailsContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Function to sync scroll between Solved and Struggled problem lists
+
 function setupUniformScroll() {
     const solvedDetails = document.getElementById('solvedDetails');
     const struggledDetails = document.getElementById('struggledDetails');
 
-    // When scrolling one list, scroll the other one automatically
     solvedDetails.addEventListener('scroll', () => {
         struggledDetails.scrollTop = solvedDetails.scrollTop;
     });
