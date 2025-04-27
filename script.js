@@ -171,44 +171,30 @@ function createChart(canvasId, problemRatings, title) {
     }
 }
 
-// Function to display problems of a specific rating inside a given container
 function displayProblems(rating, problemRatings, detailsId) {
-    // Get the list of problems for the given rating, or an empty array if none exist
     const problemList = problemRatings[rating] || [];
-
-    // Get the container where problems will be displayed
     const detailsContent = document.getElementById(detailsId);
-
-    // Get the other container (solvedDetails <-> struggledDetails) to show both side-by-side
     const otherDetailsId = detailsId === 'solvedDetails' ? 'struggledDetails' : 'solvedDetails';
     const otherDetailsContent = document.getElementById(otherDetailsId);
 
-    // If no problems found for the given rating
     if (problemList.length === 0) {
         detailsContent.innerHTML = `<h4>Problems with Rating ${rating}</h4>No problems with rating ${rating} found.`;
-    } 
-    // If problems exist for the given rating
-    else {
-        // Start by adding a heading
+    } else {
         detailsContent.innerHTML = `<h4>Problems with Rating ${rating}</h4>`;
-
-        // Loop through each problem and create a clickable link
+        
         problemList.forEach((problem, index) => {
             const problemElement = document.createElement('div');
             problemElement.className = 'problem';
-            problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${index + 1}. ${problem.name}</a>`;
+            problemElement.innerHTML = `<a href="${problem.link}" target="_blank" class="problem-title">${index+1}. ${problem.name}</a>`;
             detailsContent.appendChild(problemElement);
         });
     }
 
-    // Make sure both containers are visible
     detailsContent.classList.remove('hidden');
     otherDetailsContent.classList.remove('hidden');
 
-    // Smooth scroll to the details container
     detailsContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
 
 function setupUniformScroll() {
     const solvedDetails = document.getElementById('solvedDetails');
